@@ -1,20 +1,26 @@
 ﻿@page
 
 <div>
-    <h1>Hello</h1>
-    <input type="button" id="buttonToClick" value="Click" />
-    <ul id="messagesList"></ul>
+    <form id="submitForm">
+        <input type="text" id="usernameField" placeholder="Your username" />
+        <input type="text" id="messageField" placeholder="Your message" />
+        <input type="submit" id="submitButton" value="Send" />
+    </form>
+    <ul id="conversation"></ul>
 </div>
 
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>
 
 <script>
-    var connection = new signalR.HubConnectionBuilder().withUrl("/testHub").build();
+    
+    document.getElementById("usernameField").focus();
 
-    connection.on("ReceiveMessage", function (message) {
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
+
+    connection.on("ReceiveMessage", function (username, message) {
         var li = document.createElement("li");
-        li.textContent = message;
-        document.getElementById("messagesList").appendChild(li);
+        li.innerHTML = "<b>" + username + "</b>: " + message;
+        document.getElementById("conversation").appendChild(li);
     });
 
     connection.start().then(function (res) {
@@ -23,11 +29,21 @@
         return console.error(err.toString());
     });
 
-    document.getElementById("buttonToClick")
-        .addEventListener("click", function (event) {
-            connection.invoke("SendMessage").catch(function (err) {
+    function sendMessage(event) {
+        var usernameField = document.getElementById("usernameField");
+        var messageField = document.getElementById("messageField");
+        
+        connection.invoke("SendMessage", usernameField.value, messageField.value)
+            .catch(function (err) {
                 return console.error(err.toString());
             });
-            event.preventDefault();
-        });
+            
+        usernameField.disabled = true;
+        messageField.value = "";
+        messageField.focus();
+        event.preventDefault();
+    }
+
+    document.getElementById("submitForm").addEventListener("submit", sendMessage);
+    document.getElementById("submitButton").addEventListener("click", sendMessage);
 </script>

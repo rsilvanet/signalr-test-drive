@@ -41,14 +41,13 @@ namespace SignalR.TestDrive
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseMvc();
 
             app.UseSignalR(o => 
             {
-                o.MapHub<TestHub>("/testHub");
+                o.MapHub<ChatHub>("/chat");
             });
         }
     }
