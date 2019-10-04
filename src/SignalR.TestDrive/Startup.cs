@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SignalR.TestDrive.Hubs;
+using SignalR.TestDrive.Services;
 
 namespace SignalR.TestDrive
 {
@@ -27,6 +28,7 @@ namespace SignalR.TestDrive
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSignalR();
+            services.AddHostedService<ClockHostedService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -47,7 +49,8 @@ namespace SignalR.TestDrive
 
             app.UseSignalR(o => 
             {
-                o.MapHub<ChatHub>("/chat");
+                o.MapHub<ChatHub>("/chatHub");
+                o.MapHub<ClockHub>("/clockHub");
             });
         }
     }

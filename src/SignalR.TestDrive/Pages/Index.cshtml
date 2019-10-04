@@ -1,6 +1,8 @@
 ﻿@page
 
 <div>
+    <input type="text" id="dateTimeField" disabled="true" value="loading..." />
+    <br><br>
     <form id="submitForm">
         <input type="text" id="usernameField" placeholder="Your username" />
         <input type="text" id="messageField" placeholder="Your message" />
@@ -15,25 +17,30 @@
     
     document.getElementById("usernameField").focus();
 
-    var connection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
+    var chatConnection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+    var clockConnection = new signalR.HubConnectionBuilder().withUrl("/clockHub").build();
 
-    connection.on("ReceiveMessage", function (username, message) {
+    chatConnection.on("ReceiveMessage", function (username, message) {
         var li = document.createElement("li");
         li.innerHTML = "<b>" + username + "</b>: " + message;
         document.getElementById("conversation").appendChild(li);
     });
 
-    connection.start().then(function (res) {
-        return console.log(res);
-    }).catch(function (err) {
-        return console.error(err.toString());
+    clockConnection.on("UpdateClock", function (dateTime) {
+        var date = new Date(dateTime);
+        var dateStr = date.toLocaleDateString();
+        var timeStr = date.toLocaleTimeString();
+        document.getElementById("dateTimeField").value = dateStr + ' ' + timeStr;
     });
+
+    chatConnection.start();
+    clockConnection.start();
 
     function sendMessage(event) {
         var usernameField = document.getElementById("usernameField");
         var messageField = document.getElementById("messageField");
         
-        connection.invoke("SendMessage", usernameField.value, messageField.value)
+        chatConnection.invoke("SendMessage", usernameField.value, messageField.value)
             .catch(function (err) {
                 return console.error(err.toString());
             });
