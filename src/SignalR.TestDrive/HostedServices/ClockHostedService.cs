@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
 using SignalR.TestDrive.Hubs;
 
-namespace SignalR.TestDrive.Services
+namespace SignalR.TestDrive.HostedServices
 {
 	public class ClockHostedService : IHostedService, IDisposable
 	{
