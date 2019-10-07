@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SignalR.TestDrive.Hubs;
-using SignalR.TestDrive.Services;
+using SignalR.TestDrive.HostedServices;
 
 namespace SignalR.TestDrive
 {
