@@ -13,11 +13,10 @@ namespace SignalR.TestDrive.HostedServices
 			_messages = new List<Tuple<DateTime, string, string>>();
 		}
 
-		public async Task Store(DateTime time, string username, string message)
+		public async Task StoreAsync(DateTime time, string username, string message)
 		{
-			await Task.Delay(1500);
+			await Task.Delay(3000);
 			_messages.Add(new Tuple<DateTime, string, string>(time, username, message));
-			await Task.Delay(1500);
 		}
 	}
 }

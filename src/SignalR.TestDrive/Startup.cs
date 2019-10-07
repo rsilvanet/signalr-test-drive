@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SignalR.TestDrive.Hubs;
 using SignalR.TestDrive.HostedServices;
+using SignalR.TestDrive.Background;
 
 namespace SignalR.TestDrive
 {
@@ -28,7 +29,10 @@ namespace SignalR.TestDrive
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSignalR();
+            services.AddSingleton<BackgroundTaskQueue>();
+            services.AddSingleton<SlowMessageStorageService>();
             services.AddHostedService<ClockHostedService>();
+            services.AddHostedService<QueuedHostedService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
